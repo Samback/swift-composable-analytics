@@ -1,5 +1,6 @@
 import Foundation
 import XCTestDynamicOverlay
+import IssueReporting
 
 public struct AnalyticsClient {
 	public var sendAnalytics: @Sendable (AnalyticsData) -> Void
@@ -19,7 +20,7 @@ extension AnalyticsClient {
 
 extension AnalyticsClient {
 	static var unimplemented: Self = Self(
-		sendAnalytics: XCTUnimplemented("\(Self.self).sendAnalytics")
+		sendAnalytics: IssueReporting.unimplemented("\(Self.self).sendAnalytics")
 	)
 
 	public static var consoleLogger: Self = .init(
