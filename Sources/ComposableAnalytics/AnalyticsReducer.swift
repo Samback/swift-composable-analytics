@@ -1,7 +1,11 @@
 import Foundation
 import ComposableArchitecture
 
-public struct AnalyticsReducer<State, Action>: Reducer {
+@Reducer
+public struct AnalyticsReducer<State, Action> {
+	public typealias State = State
+	public typealias Action = Action
+	
 	@usableFromInline
 	let toAnalyticsData: (State, Action) -> AnalyticsData?
 	
@@ -18,14 +22,15 @@ public struct AnalyticsReducer<State, Action>: Reducer {
 		self.toAnalyticsData = toAnalyticsData
 	}
 	
-	@inlinable
-	public func reduce(into state: inout State, action: Action) -> Effect<Action> {
-		guard let analyticsData = toAnalyticsData(state, action) else {
-			return .none
-		}
+	public var body: some ReducerOf<Self> {
+		Reduce { state, action in
+			guard let analyticsData = toAnalyticsData(state, action) else {
+				return .none
+			}
 
-		return .run { _ in
-			analyticsClient.sendAnalytics(analyticsData)
+			return .run { _ in
+				analyticsClient.sendAnalytics(analyticsData)
+			}
 		}
 	}
 }

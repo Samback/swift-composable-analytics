@@ -11,7 +11,11 @@ extension Reducer {
 	}
 }
 
-public struct _OnChangeAnalyticsReducer<Base: Reducer, Value: Equatable>: Reducer {
+@Reducer
+public struct _OnChangeAnalyticsReducer<Base: Reducer, Value: Equatable> {
+	public typealias State = Base.State
+	public typealias Action = Base.Action
+	
 	@usableFromInline
 	let base: Base
 
@@ -40,14 +44,15 @@ public struct _OnChangeAnalyticsReducer<Base: Reducer, Value: Equatable>: Reduce
 		self.toAnalyticsData = toAnalyticsData
 	}
 
-	@inlinable
-	public func reduce(into state: inout Base.State, action: Base.Action) -> Effect<Base.Action> {
-		let oldValue = toValue(state)
-		let effects = self.base.reduce(into: &state, action: action)
-		let newValue = toValue(state)
+	public var body: some ReducerOf<Self> {
+		Reduce { state, action in
+			let oldValue = toValue(state)
+			let effects = self.base.reduce(into: &state, action: action)
+			let newValue = toValue(state)
 
-		return isDuplicate(oldValue, newValue)
-		? effects
-		: effects.merge(with: .run { _ in analyticsClient.sendAnalytics(toAnalyticsData(oldValue, newValue)) })
+			return isDuplicate(oldValue, newValue)
+			? effects
+			: effects.merge(with: .run { _ in analyticsClient.sendAnalytics(toAnalyticsData(oldValue, newValue)) })
+		}
 	}
 }
