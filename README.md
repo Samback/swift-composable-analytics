@@ -197,11 +197,46 @@ It will fail if the analytics is expected and not received. And it will fail if 
 
 You can add ComposableAnalytics to your project by adding `https://github.com/Samback/swift-composable-analytics` into the SPM packages for your project.
 
+### Swift Package Manager
+
+#### Xcode
+1. In Xcode, go to **File** → **Add Package Dependencies**
+2. Enter the repository URL: `https://github.com/Samback/swift-composable-analytics`
+3. Choose the version rule:
+   - **Up to Next Major**: `2.0.0 < 3.0.0` (Recommended)
+   - **Exact Version**: `2.0.0` (For stability)
+   - **Branch**: `main` (Latest development)
+
+#### Package.swift
+Add this to your `Package.swift` dependencies:
+
+```swift
+dependencies: [
+  .package(url: "https://github.com/Samback/swift-composable-analytics", from: "2.0.0")
+]
+```
+
+And add it to your target:
+
+```swift
+.target(
+  name: "YourTarget",
+  dependencies: [
+    .product(name: "ComposableAnalytics", package: "swift-composable-analytics")
+  ]
+)
+```
+
 ### Requirements
 
 - iOS 16.0+ / macOS 13.0+ / tvOS 16.0+ / watchOS 9.0+
 - Swift 5.9+
 - TCA 1.9.0+
+
+### Version History
+
+- **2.0.0**: TCA 1.9.0+ migration with @Reducer macro pattern, comprehensive tests, and modern architecture
+- **main**: Latest development version (use specific versions for production)
 
 ---
 
